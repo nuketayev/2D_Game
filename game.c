@@ -5,7 +5,7 @@ void	startGame(gameState *game)
 	ft_putendl_fd("\nInitializing the game...\n", 1);
 	game->mlx = mlx_init();
 	game->win = mlx_new_window(game->mlx, game->col * WIDTH,
-			game->row * HEIGHT, "So_long");
+			game->row * HEIGHT, "so_long");
 	loadTextures(game);
 	renderMap(game);
 	mlx_key_hook(game->win, controls, game);

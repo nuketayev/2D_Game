@@ -13,27 +13,6 @@ void	freeMap(gameState *game)
 	free(game->map);
 }
 
-void	freeImages(gameState *game)
-{
-	mlx_destroy_image(game->mlx, game->images.exit);
-	if (game->images.collectible)
-		mlx_destroy_image(game->mlx, game->images.collectible);
-	if (game->images.player)
-		mlx_destroy_image(game->mlx, game->images.player);
-	if (game->images.space)
-		mlx_destroy_image(game->mlx, game->images.space);
-	if (game->images.wall)
-		mlx_destroy_image(game->mlx, game->images.wall);
-	if (game->images.closed_exit)
-		mlx_destroy_image(game->mlx, game->images.closed_exit);
-	if (game->images.open_exit)
-		mlx_destroy_image(game->mlx, game->images.open_exit);
-	mlx_destroy_display(game->mlx);
-	freeMap(game);
-	free(game->mlx);
-	exit(0);
-}
-
 void	abortGame(char *message, gameState *game)
 {
 	ft_putendl_fd(message, 1);
@@ -45,8 +24,22 @@ void	abortGame(char *message, gameState *game)
 int	closeGameWindow(gameState *game)
 {
 	mlx_destroy_window(game->mlx, game->win);
-	freeImages(game);
-	exit (0);
+	mlx_destroy_image(game->mlx, game->images.exit);
+	if (game->images.collectible)
+		mlx_destroy_image(game->mlx, game->images.collectible);
+	if (game->images.player)
+		mlx_destroy_image(game->mlx, game->images.player);
+	if (game->images.floor)
+		mlx_destroy_image(game->mlx, game->images.floor);
+	if (game->images.wall)
+		mlx_destroy_image(game->mlx, game->images.wall);
+	if (game->images.closed_exit)
+		mlx_destroy_image(game->mlx, game->images.closed_exit);
+	if (game->images.open_exit)
+		mlx_destroy_image(game->mlx, game->images.open_exit);
+	freeMap(game);
+	free(game->mlx);
+	exit(0);
 }
 
 void	printMoveCounter(int moveCount)

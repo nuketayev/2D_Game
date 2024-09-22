@@ -1,5 +1,13 @@
 #include "so_long.h"
 
+void	checkMap(gameState *game, int fd_map)
+{
+	ft_putendl_fd("\nChecking the map...\n", 1);
+	validate_elements(game);
+	shape_check(game);
+	ft_putendl_fd("\nMap is checked. Valid.\n", 1);
+}
+
 void	check_Walls(gameState *game)
 {
 	int	row;

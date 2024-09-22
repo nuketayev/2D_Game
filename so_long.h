@@ -34,7 +34,7 @@ typedef struct s_assets
 {
 	void	*collectible;
 	void	*player;
-	void	*space;
+	void	*floor;
 	void	*wall;
 	void	*exit;
 	void	*open_exit;

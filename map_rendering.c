@@ -5,13 +5,13 @@ void loadTextures(gameState *game)
     int tileWidth;
     int tileHeight;
 
-    tileWidth = 100;
-    tileHeight = 100;
+    tileWidth = WIDTH;
+    tileHeight = HEIGHT;
     game->images.wall = mlx_xpm_file_to_image(game->mlx,
             WALL, &tileWidth, &tileHeight);
     game->images.player = mlx_xpm_file_to_image(game->mlx,
             PLAYER, &tileWidth, &tileHeight);
-    game->images.space = mlx_xpm_file_to_image(game->mlx,
+    game->images.floor = mlx_xpm_file_to_image(game->mlx,
             FLOOR, &tileWidth, &tileHeight);
     game->images.exit = mlx_xpm_file_to_image(game->mlx,
             EXIT, &tileWidth, &tileHeight);
@@ -33,7 +33,7 @@ void renderMapTile(int col, int row, char tileType, gameState *game)
             game->images.wall, col * tileWidth, row * tileHeight);
     if (tileType == '0')
         mlx_put_image_to_window(game->mlx, game->win,
-            game->images.space, col * tileWidth, row * tileHeight);
+            game->images.floor, col * tileWidth, row * tileHeight);
     if (tileType == 'P')
         mlx_put_image_to_window(game->mlx, game->win,
             game->images.player, col * tileWidth, row * tileHeight);
@@ -51,11 +51,11 @@ void renderMapTile(int col, int row, char tileType, gameState *game)
             game->images.open_exit, col * tileWidth, row * tileHeight);
 }
 
-
 int renderMap(gameState *game)
 {
     int row;
     int col;
+
 
     row = 0;
     while (row < game->row)
@@ -69,28 +69,4 @@ int renderMap(gameState *game)
         row++;
     }
     return (0);
-}
-
-int countCollectibles(gameState *game)
-{
-    int col;
-    int row;
-    int collectibleCount;
-
-    row = 0;
-    collectibleCount = 0;
-    while (row < game->row)
-    {
-        col = 0;
-        while (col < game->col)
-        {
-            if (game->map[row][col] == 'C')
-            {
-                collectibleCount++;
-            }
-            col++;
-        }
-        row++;
-    }
-    return (collectibleCount);
 }

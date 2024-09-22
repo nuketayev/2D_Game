@@ -1,13 +1,5 @@
 #include "so_long.h"
 
-void	checkMap(gameState *game, int fd_map)
-{
-	ft_putendl_fd("\nChecking the map...\n", 1);
-	validate_elements(game);
-	shape_check(game);
-	ft_putendl_fd("\nMap is checked. Valid.\n", 1);
-}
-
 int colCount(int fdY)
 {
     char	*ln;
@@ -50,4 +42,28 @@ int rowCount(int fdX)
         exit(0);
     }
     return (rows);
+}
+
+int countCollectibles(gameState *game)
+{
+    int col;
+    int row;
+    int collectibleCount;
+
+    row = 0;
+    collectibleCount = 0;
+    while (row < game->row)
+    {
+        col = 0;
+        while (col < game->col)
+        {
+            if (game->map[row][col] == 'C')
+            {
+                collectibleCount++;
+            }
+            col++;
+        }
+        row++;
+    }
+    return (collectibleCount);
 }
