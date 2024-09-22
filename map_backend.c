@@ -2,9 +2,10 @@
 
 void	checkMap(gameState *game, int fd_map)
 {
-	ft_putendl_fd("\nStarting the game\n", 1);
+	ft_putendl_fd("\nChecking the map...\n", 1);
 	validate_elements(game);
 	shape_check(game);
+	ft_putendl_fd("\nMap is checked. Valid.\n", 1);
 }
 
 int colCount(int fdY)
