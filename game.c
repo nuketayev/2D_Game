@@ -1,20 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   game.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/23 18:22:23 by anuketay          #+#    #+#             */
+/*   Updated: 2024/09/23 19:07:39 by anuketay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
-void	startGame(gameState *game)
+void	start_game(t_game_state *game)
 {
 	ft_putendl_fd("\nInitializing the game...\n", 1);
 	game->mlx = mlx_init();
-	game->win = mlx_new_window(game->mlx, game->col * WIDTH,
-			game->row * HEIGHT, "so_long");
-	loadTextures(game);
-	renderMap(game);
+	game->win = mlx_new_window(game->mlx, game->col * WIDTH, game->row * HEIGHT,
+			"so_long");
+	load_textures(game);
+	render_map(game);
 	mlx_key_hook(game->win, controls, game);
-	mlx_hook(game->win, 17, 0, closeGameWindow, game);
-	mlx_expose_hook(game->win, renderMap, game);
+	mlx_hook(game->win, 17, 0, close_game_window, game);
+	mlx_expose_hook(game->win, render_map, game);
 	mlx_loop(game->mlx);
 }
 
-static int	isValidMove(gameState *game, int col, int row, int pressed_key)
+static int	is_valid_move(t_game_state *game, int col, int row, int pressed_key)
 {
 	game->temp = '0';
 	if (game->map[row][col] == '1')
@@ -31,74 +43,75 @@ static int	isValidMove(gameState *game, int col, int row, int pressed_key)
 	{
 		return (2);
 	}
-    if (pressed_key != W && pressed_key != S && pressed_key != A
-        && pressed_key != D && pressed_key != KEY_ARROW_UP
-        && pressed_key != KEY_ARROW_DOWN && pressed_key != KEY_ARROW_LEFT
-        && pressed_key != KEY_ARROW_RIGHT)
+	if (pressed_key != W && pressed_key != S && pressed_key != A
+		&& pressed_key != D && pressed_key != KEY_ARROW_UP
+		&& pressed_key != KEY_ARROW_DOWN && pressed_key != KEY_ARROW_LEFT
+		&& pressed_key != KEY_ARROW_RIGHT)
 		return (-1);
 	else
 		return (1);
 }
 
-void	endGame(gameState *game, int col, int row)
+void	end_game(t_game_state *game, int col, int row)
 {
 	game->map[row][col] = 'F';
-	renderMap(game);
-	game->isGameOver = 1;
-    ft_putendl_fd("\nCongratulation! You've collected all the $$$", 1);
-    ft_putendl_fd("Welcome to Medellin Cartel Amigo!", 1);
-    ft_putendl_fd("\n\033[1mTo fly away press any key!\033[0m\n", 1);
+	render_map(game);
+	game->is_game_over = 1;
+	ft_putendl_fd("\nCongratulation! You've collected all the $$$", 1);
+	ft_putendl_fd("Welcome to Medellin Cartel Amigo!", 1);
+	ft_putendl_fd("\n\033[1mTo fly away press any key!\033[0m\n", 1);
 }
 
-static void	movePlayer(gameState *game, int targetCol, int targetRow, int pressedKey)
+static void	move_player(t_game_state *game, int target_col, int target_row,
+		int pressedKey)
 {
-    int	isValid;
-    int	prevCol;
-    int	prevRow;
+	int	is_valid;
+	int	prev_col;
+	int	prev_row;
 
-    prevCol = game->playerPosY;
-    prevRow = game->playerPosX;
-    (void)pressedKey;
-    isValid = isValidMove(game, targetCol, targetRow, pressedKey);
-    if (isValid != -1)
-    {
-        game->playerPosY = targetCol;
-        game->playerPosX = targetRow;
-        if (game->temp != 'O')
-            game->map[targetRow][targetCol] = 'P';
-        else
-            game->map[targetRow][targetCol] = 'O';
-        if (game->map[prevRow][prevCol] != 'O')
-            game->map[prevRow][prevCol] = '0';
-        else
-            game->map[prevRow][prevCol] = 'E';
-        printMoveCounter(game->moveCount++);
-        renderMap(game);
-    }
-    if (isValid == 2)
-        endGame(game, targetCol, targetRow);
+	prev_col = game->player_pos_y;
+	prev_row = game->player_pos_x;
+	(void)pressedKey;
+	is_valid = is_valid_move(game, target_col, target_row, pressedKey);
+	if (is_valid != -1)
+	{
+		game->player_pos_y = target_col;
+		game->player_pos_x = target_row;
+		if (game->temp != 'O')
+			game->map[target_row][target_col] = 'P';
+		else
+			game->map[target_row][target_col] = 'O';
+		if (game->map[prev_row][prev_col] != 'O')
+			game->map[prev_row][prev_col] = '0';
+		else
+			game->map[prev_row][prev_col] = 'E';
+		print_move_counter(game->move_count++);
+		render_map(game);
+	}
+	if (is_valid == 2)
+		end_game(game, target_col, target_row);
 }
 
-int	controls(int keycode, gameState *game)
+int	controls(int keycode, t_game_state *game)
 {
-    int targetCol;
-    int targetRow;
+	int	target_col;
+	int	target_row;
 
-    targetCol = game->playerPosY;
-    targetRow = game->playerPosX;
-    if (keycode == A || keycode == KEY_ARROW_LEFT)
-        targetCol--;
-    else if (keycode == W || keycode == KEY_ARROW_UP)
-        targetRow--;
-    else if (keycode == S || keycode == KEY_ARROW_DOWN)
-        targetRow++;
-    else if (keycode == D || keycode == KEY_ARROW_RIGHT)
-        targetCol++;
-    else if (keycode == ESC)
-        closeGameWindow(game);
-    if (game->isGameOver != 1)
-        movePlayer(game, targetCol, targetRow, keycode);
-    else if (game->isGameOver == 1)
-        closeGameWindow(game);
-    return (0);
+	target_col = game->player_pos_y;
+	target_row = game->player_pos_x;
+	if (keycode == A || keycode == KEY_ARROW_LEFT)
+		target_col--;
+	else if (keycode == W || keycode == KEY_ARROW_UP)
+		target_row--;
+	else if (keycode == S || keycode == KEY_ARROW_DOWN)
+		target_row++;
+	else if (keycode == D || keycode == KEY_ARROW_RIGHT)
+		target_col++;
+	else if (keycode == ESC)
+		close_game_window(game);
+	if (game->is_game_over != 1)
+		move_player(game, target_col, target_row, keycode);
+	else if (game->is_game_over == 1)
+		close_game_window(game);
+	return (0);
 }
